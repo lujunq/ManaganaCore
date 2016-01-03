@@ -1,0 +1,71 @@
+html5 font Marvel
+
+<link href='https://fonts.googleapis.com/css?family=Marvel:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
+
+
+openfl.media.Video
+
+/* MANAGANA FIX */
+	
+	#if html5
+		public var videoWidth(get, null):Float;
+		public var videoHeight(get, null):Float;
+		public var videoDuration(get, null):Int;
+		public var currentTime(get, set):Int;
+		public function get_videoWidth():Float {
+			if (this.__stream != null) {
+				return (__stream.__video.videoWidth);
+			} else {
+				return (0);
+			}
+		}	
+		public function get_videoHeight():Float {
+			if (this.__stream != null) {
+				return (__stream.__video.videoHeight);
+			} else {
+				return (0);
+			}
+		}
+		public function get_videoDuration():Int {
+			if (this.__stream != null) {
+				return (Std.int(__stream.__video.duration));
+			} else {
+				return (0);
+			}
+		}
+		public function get_currentTime():Int {
+			if (this.__stream != null) {
+				return (Std.int(__stream.__video.currentTime));
+			} else {
+				return (0);
+			}
+		}
+		public function set_currentTime(value:Int):Int {
+			if (this.__stream != null) {
+				__stream.__video.currentTime = value;
+			}
+			return (value);
+		}
+	#end
+	
+	/* MANAGANA FIX END */
+	
+	
+---------------------
+
+openfl.media.SoundChannel
+
+/* MANAGANA FIX */
+	
+	#if html5
+		public var audioDuration(get, null):Int;
+		public function get_audioDuration():Int {
+			if (this.__soundInstance != null) {
+				return (Std.int(__soundInstance.getDuration() / 1000));
+			} else {
+				return (0);
+			}
+		}
+	#end
+	
+	/* MANAGANA FIX END */
