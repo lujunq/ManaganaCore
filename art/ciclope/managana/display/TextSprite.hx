@@ -218,6 +218,30 @@ class TextSprite extends BaseSprite
 		return (this._text.scrollV);
 	}
 	
+	/**
+	 * Content original width.
+	 */
+	override public function get_oWidth():Float
+	{
+		if ((this.textDisplay != MediaInfo.TEXTDISPLAY_ARTISTIC) || (this._textMode == MediaInfo.TEXTMODE_HTML)) {
+			return (this._text.width);
+		} else {
+			return (super.width);
+		}
+	}
+	
+	/**
+	 * Content original height.
+	 */
+	override public function get_oHeight():Float
+	{
+		if ((this.textDisplay != MediaInfo.TEXTDISPLAY_ARTISTIC) || (this._textMode == MediaInfo.TEXTMODE_HTML)) {
+			return (this._text.height);
+		} else {
+			return (super.height);
+		}
+	}
+	
 	// PUBLIC METHODS
 	
 	/**

@@ -119,11 +119,9 @@ class Main extends Sprite
 		
 		this._psprite = new PageSprite();
 		this.addChild(this._psprite);
-		//this._psprite.loadGraphic('http://localhost:2000/logo.png');
-		
-		trace ('start loading video');
-		
-		this._psprite.loadVideo('http://localhost:2000/sonic.mp4');
+		this._psprite.loadGraphic('http://localhost:2000/logo.png');
+		this._psprite.transition = PageSprite.TRANSITION_FROMRIGHT;
+		//this._psprite.loadVideo('http://localhost:2000/sonic.mp4');
 		
 		// Assets:
 		// openfl.Assets.getBitmapData("img/assetname.jpg");
@@ -148,9 +146,9 @@ class Main extends Sprite
 	
 	private function onClick(evt:MouseEvent):Void
 	{
-		/*trace ('click');
+		trace ('click');
 		if (this._psprite.url == 'http://localhost:2000/logo.png') this._psprite.loadGraphic('http://localhost:2000/logoofl.png');
 			else this._psprite.loadGraphic('http://localhost:2000/logo.png');
-			*/
+			
 	}
 }

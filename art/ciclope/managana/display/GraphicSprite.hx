@@ -70,6 +70,81 @@ class GraphicSprite extends BaseSprite
 	// GETTERS/SETTERS
 	
 	/**
+	 * Smoothed display?
+	 */
+	override public function get_smoothing():Bool
+	{
+		#if flash
+			if (this._graphicFL.content != null) {
+				if (Std.is(this._graphicFL.content, Bitmap)) {
+					var bmp = cast(this._graphicFL.content, Bitmap);
+					return (bmp.smoothing);
+				} else {
+					return (true);
+				}
+			} else {
+				return (true);
+			}
+		#else
+			return (this._graphic.smoothing);
+		#end
+	}
+	override public function set_smoothing(value:Bool):Bool
+	{
+		#if flash
+			if (this._graphicFL.content != null) {
+				if (Std.is(this._graphicFL.content, Bitmap)) {
+					var bmp = cast(this._graphicFL.content, Bitmap);
+					bmp.smoothing = value;
+				}
+			}
+		#else
+			this._graphic.smoothing = value;
+		#end
+		return (value);
+	}
+	
+	/**
+	 * Content original width.
+	 */
+	override public function get_oWidth():Float
+	{
+		#if flash
+			if (this._graphicFL.contentLoaderInfo != null) {
+				return (this._graphicFL.contentLoaderInfo.width);
+			} else {
+				return (0);
+			}
+		#else
+			if (this._graphic.bitmapData != null) {
+				return (this._graphic.bitmapData.width);
+			} else {
+				return (0);
+			}
+		#end
+	}
+	
+	/**
+	 * Content original height.
+	 */
+	override public function get_oHeight():Float
+	{
+		#if flash
+			if (this._graphicFL.contentLoaderInfo != null) {
+				return (this._graphicFL.contentLoaderInfo.height);
+			} else {
+				return (0);
+			}
+		#else
+			if (this._graphic.bitmapData != null) {
+				return (this._graphic.bitmapData.height);
+			} else {
+				return (0);
+			}
+		#end
+	}
+	
+	/**
 	 * Display width.
 	 */
 	#if flash

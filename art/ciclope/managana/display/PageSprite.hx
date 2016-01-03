@@ -8,6 +8,9 @@ import art.ciclope.managana.event.SpriteEvent;
 import openfl.display.Shape;
 import openfl.display.Sprite;
 
+// ACTUATE
+import motion.Actuate;
+
 /**
  * <b>CICLOPE MANAGANA - www.ciclope.com.br / www.managana.org</b><br>
  * <b>License:</b> GNU LGPL version 3<br><br>
@@ -16,20 +19,60 @@ import openfl.display.Sprite;
  */
 class PageSprite extends Sprite
 {
+	// TRANSITION TYPES
+	
+	/**
+	 * Media load transition: none.
+	 */
+	inline public static var TRANSITION_NONE = 'TRANSITION_NONE';
+	
+	/**
+	 * Media load transition: from right.
+	 */
+	inline public static var TRANSITION_FROMRIGHT = 'TRANSITION_FROMRIGHT';
+	
+	/**
+	 * Media load transition: from left.
+	 */
+	inline public static var TRANSITION_FROMLEFT = 'TRANSITION_FROMLEFT';
+	
+	/**
+	 * Media load transition: from top.
+	 */
+	inline public static var TRANSITION_FROMTOP = 'TRANSITION_FROMTOP';
+	
+	/**
+	 * Media load transition: from bottom.
+	 */
+	inline public static var TRANSITION_FROMBOTTOM = 'TRANSITION_FROMBOTTOM';
 	
 	// SPRITE PAGES
 	
 	private var _page0:MediaSprite;				// one media page
 	private var _page1:MediaSprite;				// one media page
 	private var _pages:Array<MediaSprite>;		// media pages holder
+	private var _sprholder:Sprite;				// media page sprite holder
 	
 	// PRIVATE VALUES
 	
 	private var _current:Int = 0;				// current displayed page
 	private var _mask:Shape;					// display mask for pages
+	private var _tweening:Bool = false;			// playing media change animation?
 	#if html5
 		private var _click:Shape;				// background for click handling
 	#end
+	
+	// PUBLIC VALUES
+	
+	/**
+	 * Media load transition type.
+	 */
+	public var transition:String = PageSprite.TRANSITION_NONE;
+	
+	/**
+	 * Media transition time.
+	 */
+	public var transitionTime:Float = 1;
 	
 	// GETTERS/SETTERS
 	
@@ -119,6 +162,21 @@ class PageSprite extends Sprite
 	 * Currently loading a content?
 	 */
 	public var loading(get, null):Bool;
+	
+	/**
+	 * Smoothed display?
+	 */
+	public var smoothing(get, set):Bool;
+	
+	/**
+	 * Content original width.
+	 */
+	public var oWidth(get, null):Float;
+	
+	/**
+	 * Content original height.
+	 */
+	public var oHeight(get, null):Float;
 
 	/**
 	 * PageSprite constructor.
@@ -137,15 +195,18 @@ class PageSprite extends Sprite
 			this.addChild(this._click);
 		#end
 		
+		this._sprholder = new Sprite();
+		this.addChild(this._sprholder);
+		
 		this._page0 = new MediaSprite(w, h);
 		this._page1 = new MediaSprite(w, h);
 		this._pages = new Array<MediaSprite>();
 		this._pages.push(this._page0);
 		this._pages.push(this._page1);
 		
-		this.addChild(this._page0);
+		this._sprholder.addChild(this._page0);
 		this._page1.visible = false;
-		this.addChild(this._page1);
+		this._sprholder.addChild(this._page1);
 		
 		this._mask = new Shape();
 		this._mask.graphics.beginFill(0xFF9900);
@@ -153,8 +214,7 @@ class PageSprite extends Sprite
 		this._mask.graphics.endFill();
 		this.addChild(this._mask);
 		
-		this._page0.mask = this._mask;
-		this._page1.mask = this._mask;
+		this._sprholder.mask = this._mask;
 		
 		this._page0.addEventListener(SpriteEvent.CONTENT_LOADED, onContentLoaded);
 		this._page0.addEventListener(SpriteEvent.CONTENT_LOAD_ERROR, onContentLoadError);
@@ -170,6 +230,9 @@ class PageSprite extends Sprite
 	
 	// GETTERS/SETTERS
 	
+	/**
+	 * The media sprite index not shown at the moment.
+	 */
 	private function get__other():Int
 	{
 		if (this._current == 0) return (1);
@@ -379,6 +442,36 @@ class PageSprite extends Sprite
 	}
 	
 	/**
+	 * Smoothed display?
+	 */
+	public function get_smoothing():Bool
+	{
+		return (this._page0.smoothing);
+	}
+	public function set_smoothing(value:Bool):Bool
+	{
+		this._page0.smoothing = value;
+		this._page1.smoothing = value;
+		return (true);
+	}
+	
+	/**
+	 * Content original width.
+	 */
+	public function get_oWidth():Float
+	{
+		return (this._pages[this._current].oWidth);
+	}
+	
+	/**
+	 * Content original height.
+	 */
+	public function get_oHeight():Float
+	{
+		return (this._pages[this._current].oHeight);
+	}
+	
+	/**
 	 * Display width.
 	 */
 	#if flash
@@ -453,8 +546,11 @@ class PageSprite extends Sprite
 	 */
 	public function loadGraphic(url:String):Bool
 	{
-		trace ('loading graphic', url);
-		return (this._pages[this._other].loadGraphic(url));
+		if (!this._tweening) {
+			return (this._pages[this._other].loadGraphic(url));
+		} else {
+			return (false);
+		}
 	}
 	
 	/**
@@ -464,7 +560,11 @@ class PageSprite extends Sprite
 	 */
 	public function loadSound(url:String):Bool
 	{
-		return (this._pages[this._other].loadSound(url));
+		if (!this._tweening) {
+			return (this._pages[this._other].loadSound(url));
+		} else {
+			return (false);
+		}
 	}
 	
 	/**
@@ -474,7 +574,11 @@ class PageSprite extends Sprite
 	 */
 	public function loadText(url:String):Bool
 	{
-		return (this._pages[this._other].loadText(url));
+		if (!this._tweening) {
+			return (this._pages[this._other].loadText(url));
+		} else {
+			return (false);
+		}
 	}
 	
 	/**
@@ -484,7 +588,11 @@ class PageSprite extends Sprite
 	 */
 	public function loadHTMLText(url:String):Bool
 	{
-		return (this._pages[this._other].loadHTMLText(url));
+		if (!this._tweening) {
+			return (this._pages[this._other].loadHTMLText(url));
+		} else {
+			return (false);
+		}
 	}
 	
 	/**
@@ -494,26 +602,41 @@ class PageSprite extends Sprite
 	 */
 	public function loadVideo(url:String):Bool
 	{
-		trace ('loading video', url);
-		return (this._pages[this._other].loadVideo(url));
+		if (!this._tweening) {
+			return (this._pages[this._other].loadVideo(url));
+		} else {
+			return (false);
+		}
 	}
 	
 	/**
 	 * Set the media sprite content to a plain text.
 	 * @param	txt	the plain text to show
+	 * @return	true if the text can be set
 	 */
-	public function setText(txt:String):Void
+	public function setText(txt:String):Bool
 	{
-		this._pages[this._other].setText(txt);
+		if (!this._tweening) {
+			this._pages[this._other].setText(txt);
+			return (true);
+		} else {
+			return (false);
+		}
 	}
 	
 	/**
 	 * Set the media sprite content to a HTML text.
 	 * @param	txt	the HTML text to show
+	 * @return	true if the text can be set
 	 */
-	public function setHTMLText(txt:String):Void
+	public function setHTMLText(txt:String):Bool
 	{
-		this._pages[this._other].setHTMLText(txt);
+		if (!this._tweening) {
+			this._pages[this._other].setHTMLText(txt);
+			return (true);
+		} else {
+			return (false);
+		}
 	}
 	
 	/**
@@ -522,7 +645,7 @@ class PageSprite extends Sprite
 	 */
 	public function play(time:Int = -1):Void
 	{
-		this._pages[this._current].play(time);
+		if (!this._tweening) this._pages[this._current].play(time);
 	}
 	
 	/**
@@ -530,7 +653,7 @@ class PageSprite extends Sprite
 	 */
 	public function pause():Void
 	{
-		this._pages[this._current].pause();
+		if (!this._tweening) this._pages[this._current].pause();
 	}
 	
 	/**
@@ -539,7 +662,7 @@ class PageSprite extends Sprite
 	 */
 	public function seek(to:Int):Void
 	{
-		this._pages[this._current].seek(to);
+		if (!this._tweening) this._pages[this._current].seek(to);
 	}
 	
 	/**
@@ -547,7 +670,7 @@ class PageSprite extends Sprite
 	 */
 	public function stop():Void
 	{
-		this._pages[this._current].stop();
+		if (!this._tweening) this._pages[this._current].stop();
 	}
 	
 	/**
@@ -556,7 +679,11 @@ class PageSprite extends Sprite
 	 */
 	public function update():Int
 	{
-		return (this._pages[this._current].update());
+		if (!this._tweening)  {
+			return (this._pages[this._current].update());
+		} else {
+			return (0);
+		}
 	}
 	
 	/**
@@ -565,6 +692,8 @@ class PageSprite extends Sprite
 	public function dispose():Void
 	{
 		this.removeChildren();
+		this._sprholder.removeChildren();
+		this._sprholder = null;
 		while (this._pages.length > 0) this._pages.shift();
 		this._pages = null;
 		this._page0.removeEventListener(SpriteEvent.CONTENT_LOADED, onContentLoaded);
@@ -592,26 +721,61 @@ class PageSprite extends Sprite
 	// PRIVATE METHODS
 	
 	/**
-	 * Change the current media sprite on display.
-	 */
-	private function changeCurrent():Void
-	{
-		this._pages[this._current].visible = false;
-		this._pages[this._other].visible = true;
-		if (this._current == 0) this._current = 1;
-			else this._current = 0;
-	}
-	
-	/**
 	 * A new media content was loaded.
 	 */
 	private function onContentLoaded(evt:SpriteEvent):Void
 	{
 		this._pages[this._current].pause();
 		this._pages[this._other].pause();
-		this.changeCurrent();
+		// start display transition
+		this._tweening = true;
+		switch (this.transition) {
+			case PageSprite.TRANSITION_FROMRIGHT:
+				this._pages[this._other].y = 0;
+				this._pages[this._other].x = this.width;
+				this._pages[this._other].visible = true;
+				Actuate.tween(this._pages[this._other], this.transitionTime, { x: 0 } ).onComplete(this.mediaTransitionEnd);
+				Actuate.tween(this._pages[this._current], this.transitionTime, { x: -this.width } );
+			case PageSprite.TRANSITION_FROMLEFT:
+				this._pages[this._other].y = 0;
+				this._pages[this._other].x = -this.width;
+				this._pages[this._other].visible = true;
+				Actuate.tween(this._pages[this._other], this.transitionTime, { x: 0 } ).onComplete(this.mediaTransitionEnd);
+				Actuate.tween(this._pages[this._current], this.transitionTime, { x: this.width } );
+			case PageSprite.TRANSITION_FROMTOP:
+				this._pages[this._other].y = -this.height;
+				this._pages[this._other].x = 0;
+				this._pages[this._other].visible = true;
+				Actuate.tween(this._pages[this._other], this.transitionTime, { y: 0 } ).onComplete(this.mediaTransitionEnd);
+				Actuate.tween(this._pages[this._current], this.transitionTime, { y: this.height } );
+			case PageSprite.TRANSITION_FROMBOTTOM:
+				this._pages[this._other].y = this.height;
+				this._pages[this._other].x = 0;
+				this._pages[this._other].visible = true;
+				Actuate.tween(this._pages[this._other], this.transitionTime, { y: 0 } ).onComplete(this.mediaTransitionEnd);
+				Actuate.tween(this._pages[this._current], this.transitionTime, { y: -this.height } );
+			default: // no transition set: just change the display
+				this._pages[this._other].y = 0;
+				this._pages[this._other].x = 0;
+				this.mediaTransitionEnd();
+		}
+	}
+	
+	/**
+	 * The media load transition just finished.
+	 */
+	private function mediaTransitionEnd():Void
+	{
+		this._pages[this._current].visible = false;
+		this._pages[this._other].visible = true;
+		if (this._current == 0) {
+			this._current = 1;
+		} else {
+			this._current = 0;
+		}
+		this._tweening = false;
 		if (this.playOnLoad) this._pages[this._current].play();
-		this.dispatchEvent(new SpriteEvent(SpriteEvent.CONTENT_LOADED, evt.mediaType));
+		this.dispatchEvent(new SpriteEvent(SpriteEvent.CONTENT_LOADED, this._pages[this._current].mediaType));
 	}
 	
 	/**

@@ -72,6 +72,22 @@ class BaseSprite extends Sprite
 	 * Sprite media type.
 	 */
 	public var mediaType(get, null):String;
+	
+	/**
+	 * Smoothed display?
+	 */
+	public var smoothing(get, set):Bool;
+	
+	/**
+	 * Content original width.
+	 */
+	public var oWidth(get, null):Float;
+	
+	/**
+	 * Content original height.
+	 */
+	public var oHeight(get, null):Float;
+
 
 	/**
 	 * BaseSprite constructor.
@@ -142,6 +158,34 @@ class BaseSprite extends Sprite
 	public function get_mediaType():String
 	{
 		return (this._mediaType);
+	}
+	
+	/**
+	 * Smoothed display?
+	 */
+	public function get_smoothing():Bool
+	{
+		return (true);
+	}
+	public function set_smoothing(value:Bool):Bool
+	{
+		return (true);
+	}
+	
+	/**
+	 * Content original width.
+	 */
+	public function get_oWidth():Float
+	{
+		return (0);
+	}
+	
+	/**
+	 * Content original height.
+	 */
+	public function get_oHeight():Float
+	{
+		return (0);
 	}
 	
 	/**

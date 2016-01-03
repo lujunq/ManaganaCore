@@ -104,6 +104,34 @@ class VideoSprite extends BaseSprite
 	}
 	
 	/**
+	 * Smoothed display?
+	 */
+	override public function get_smoothing():Bool
+	{
+		return (this._video.smoothing);
+	}
+	override public function set_smoothing(value:Bool):Bool
+	{
+		return (this._video.smoothing = value);
+	}
+	
+	/**
+	 * Content original width.
+	 */
+	override public function get_oWidth():Float
+	{
+		return (this._video.videoWidth);
+	}
+	
+	/**
+	 * Content original height.
+	 */
+	override public function get_oHeight():Float
+	{
+		return (this._video.videoHeight);
+	}
+	
+	/**
 	 * Display width.
 	 */
 	#if flash

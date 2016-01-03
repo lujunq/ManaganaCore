@@ -122,6 +122,21 @@ class MediaSprite extends Sprite
 	public var loading(get, null):Bool;
 	
 	/**
+	 * Smoothed display?
+	 */
+	public var smoothing(get, set):Bool;
+	
+	/**
+	 * Content original width.
+	 */
+	public var oWidth(get, null):Float;
+	
+	/**
+	 * Content original height.
+	 */
+	public var oHeight(get, null):Float;
+	
+	/**
 	 * MediaSprite constructor.
 	 * @param	w	the original width
 	 * @param	h	the original height
@@ -172,6 +187,8 @@ class MediaSprite extends Sprite
 		this._sprites.set(MediaInfo.TYPE_TEXT, this._txSprite);
 		this._sprites.set(MediaInfo.TYPE_VIDEO, this._vdSprite);
 		
+		// set initial smoothing
+		this.smoothing = true;
 		
 	}
 	
@@ -328,6 +345,44 @@ class MediaSprite extends Sprite
 	{
 		if (this._currentType != MediaInfo.TYPE_UNKNOWN) {
 			return (this._sprites.get(this._currentType).totalTime);
+		} else {
+			return (0);
+		}
+	}
+	
+	/**
+	 * Smoothed display?
+	 */
+	public function get_smoothing():Bool
+	{
+		return (this._vdSprite.smoothing);
+	}
+	public function set_smoothing(value:Bool):Bool
+	{
+		this._grSprite.smoothing = value;
+		this._vdSprite.smoothing = value;
+		return (true);
+	}
+	
+	/**
+	 * Content original width.
+	 */
+	public function get_oWidth():Float
+	{
+		if (this._currentType != MediaInfo.TYPE_UNKNOWN) {
+			return (this._sprites.get(this._currentType).oWidth);
+		} else {
+			return (0);
+		}
+	}
+	
+	/**
+	 * Content original height.
+	 */
+	public function get_oHeight():Float
+	{
+		if (this._currentType != MediaInfo.TYPE_UNKNOWN) {
+			return (this._sprites.get(this._currentType).oHeight);
 		} else {
 			return (0);
 		}
@@ -650,6 +705,10 @@ class MediaSprite extends Sprite
 		this.removeChildren();
 		for (key in this._sprites.keys()) {
 			if (key != this._currentType) this._sprites.get(key).pause();
+		}
+		// adjust smoothing for loaded graphic
+		if (this._currentType == MediaInfo.TYPE_GRAPHIC) {
+			this._grSprite.smoothing = this.smoothing;
 		}
 		// add current display
 		this.addChild(this._sprites.get(this._currentType));
