@@ -1,0 +1,20 @@
+Issues found on OPENFL
+updated on 2016-01-02
+
+VIDEO ON HTML5
+	* video size setting on canvas output (width and height) is not effective (works on DOM)
+	* video display doesn't work on webgl output (only the sound plays)
+	* "videoWidth" and "videoHeight" (original media size) always return 0 on HTML5 (ok on Flash)
+		> __stream.__video.videoHeight and __stream.__video.videoWidth at openfl.media.Video does return the right value
+	* NetStream.time doesn't return the current playback time for the loaded video (works on on Flash)
+		> __stream.__video.currentTime at openfl.media.Video return the correct value
+	* NetStream doesn't dispatch the metadata event on video load so there is no way to recover the correct total video duration (get from the metadata info on Flash)
+		> __stream.__video.duration at openfl.media.Video return the correct value
+		
+MASKS ON HTML5
+	* masking a sprite with another sprite produces inverted results on HTML5 (ok on Flash)
+		> using a Shape object for masking produces the expected results
+
+SOUND ON HTML5
+	* Sound.length always return 0 on HTML5 (ok on Flash)
+		> __soundInstance.getDuration() at openfl.media.SoundChannel provides the correct value
