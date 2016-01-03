@@ -1,8 +1,10 @@
 package art.ciclope.managana.util;
 
 /**
- * ...
- * @author Lucas S. Junqueira
+ * <b>CICLOPE MANAGANA - www.ciclope.com.br / www.managana.org</b><br>
+ * <b>License:</b> GNU LGPL version 3<br><br>
+ * MediaInfo provides constant values for Managana media display classes.
+ * @author Lucas Junqueira <lucas@ciclope.art.br>
  */
 class MediaInfo
 {
@@ -90,7 +92,5 @@ class MediaInfo
 	 * Text align: justify.
 	 */
 	inline public static var TEXTALIGN_JUSTIFY = 'TEXTALIGN_JUSTIFY';
-
-	public function new() { }
 	
 }

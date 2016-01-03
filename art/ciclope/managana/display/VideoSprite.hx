@@ -16,8 +16,10 @@ import openfl.media.Video;
 import openfl.display.Shape;
 
 /**
- * ...
- * @author Lucas S. Junqueira
+ * <b>CICLOPE MANAGANA - www.ciclope.com.br / www.managana.org</b><br>
+ * <b>License:</b> GNU LGPL version 3<br><br>
+ * VideoSprite extends BaseSprite to enable simple download and display of video files. The supported format/codecs depend on the target/browser.
+ * @author Lucas Junqueira <lucas@ciclope.art.br>
  */
 class VideoSprite extends BaseSprite
 {
@@ -34,6 +36,9 @@ class VideoSprite extends BaseSprite
 		private var _bg:Shape;						// clickable background
 	#end
 
+	/**
+	 * VideoSprite constructor.
+	 */
 	public function new() 
 	{
 		super();

@@ -7,8 +7,10 @@ import art.ciclope.managana.util.MediaInfo;
 import openfl.events.Event;
 
 /**
- * ...
- * @author Lucas S. Junqueira
+ * <b>CICLOPE MANAGANA - www.ciclope.com.br / www.managana.org</b><br>
+ * <b>License:</b> GNU LGPL version 3<br><br>
+ * SpriteEvent provides event types for Managana media sprite classes.
+ * @author Lucas Junqueira <lucas@ciclope.art.br>
  */
 class SpriteEvent extends Event
 {
@@ -42,6 +44,13 @@ class SpriteEvent extends Event
 	 */
 	public var mediaType:String = MediaInfo.TYPE_UNKNOWN;
 
+	/**
+	 * SpriteEvent constructor.
+	 * @param	type	event type
+	 * @param	mtype	sprite media type
+	 * @param	bubbles	can bubble?
+	 * @param	cancelable	is cancelable?
+	 */
 	public function new(type:String, mtype:String=MediaInfo.TYPE_UNKNOWN, bubbles:Bool=false, cancelable:Bool=false)
 	{
 		super(type, bubbles, cancelable);

@@ -22,8 +22,10 @@ import openfl.net.URLLoader;
 import haxe.Timer;
 
 /**
- * ...
- * @author Lucas S. Junqueira
+ * <b>CICLOPE MANAGANA - www.ciclope.com.br / www.managana.org</b><br>
+ * <b>License:</b> GNU LGPL version 3<br><br>
+ * GraphicSprite extends BaseSprite to enable simple download and display of picture files - PNG, JPG and GIF (also SWF on Flash target).
+ * @author Lucas Junqueira <lucas@ciclope.art.br>
  */
 class GraphicSprite extends BaseSprite
 {
@@ -38,7 +40,9 @@ class GraphicSprite extends BaseSprite
 		private var _timer:Timer;				// a timer to check bitmap load
 	#end
 	
-	
+	/**
+	 * GraphicSprite constructor.
+	 */
 	public function new() 
 	{
 		super();

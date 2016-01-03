@@ -1,11 +1,13 @@
-html5 font Marvel
+html5 font embed for Marvel
 
 <link href='https://fonts.googleapis.com/css?family=Marvel:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
+
+-----------------------------
 
 
 openfl.media.Video
 
-/* MANAGANA FIX */
+	/* MANAGANA FIX */
 	
 	#if html5
 		public var videoWidth(get, null):Float;
@@ -68,4 +70,4 @@ openfl.media.SoundChannel
 		}
 	#end
 	
-	/* MANAGANA FIX END */
+/* MANAGANA FIX END */

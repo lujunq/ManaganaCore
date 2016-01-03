@@ -13,8 +13,10 @@ import art.ciclope.managana.event.SpriteEvent;
 import openfl.display.Sprite;
 
 /**
- * ...
- * @author Lucas S. Junqueira
+ * <b>CICLOPE MANAGANA - www.ciclope.com.br / www.managana.org</b><br>
+ * <b>License:</b> GNU LGPL version 3<br><br>
+ * MediaSprite provides a single class to handle the download and the display of all media types supported by Managana.
+ * @author Lucas Junqueira <lucas@ciclope.art.br>
  */
 class MediaSprite extends Sprite
 {
@@ -119,9 +121,11 @@ class MediaSprite extends Sprite
 	 */
 	public var loading(get, null):Bool;
 	
-	
-	
-
+	/**
+	 * MediaSprite constructor.
+	 * @param	w	the original width
+	 * @param	h	the original height
+	 */
 	public function new(w:Float = 160, h:Float = 90) 
 	{
 		super();

@@ -8,8 +8,10 @@ import art.ciclope.managana.util.MediaInfo;
 import openfl.display.Sprite;
 
 /**
- * ...
- * @author Lucas S. Junqueira
+ * <b>CICLOPE MANAGANA - www.ciclope.com.br / www.managana.org</b><br>
+ * <b>License:</b> GNU LGPL version 3<br><br>
+ * BaseSprite is meant be extended and used as the base for the Managana media display sprites.
+ * @author Lucas Junqueira <lucas@ciclope.art.br>
  */
 class BaseSprite extends Sprite
 {
@@ -71,6 +73,9 @@ class BaseSprite extends Sprite
 	 */
 	public var mediaType(get, null):String;
 
+	/**
+	 * BaseSprite constructor.
+	 */
 	public function new() 
 	{
 		super();
@@ -281,8 +286,5 @@ class BaseSprite extends Sprite
 			this.seek(0);
 		}
 	}
-	
-	
-	public function clickme():Void { }
 	
 }

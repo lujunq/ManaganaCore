@@ -1,14 +1,18 @@
 package art.ciclope.managana.display;
 
+// CICLOPE CLASSES
 import art.ciclope.managana.display.MediaSprite;
 import art.ciclope.managana.event.SpriteEvent;
-import openfl.display.Shape;
 
+// OPENFL PACKAGES
+import openfl.display.Shape;
 import openfl.display.Sprite;
 
 /**
- * ...
- * @author Lucas S. Junqueira
+ * <b>CICLOPE MANAGANA - www.ciclope.com.br / www.managana.org</b><br>
+ * <b>License:</b> GNU LGPL version 3<br><br>
+ * PageSprite provides a fancy way to load all Managana-supported media files with animated transitions.
+ * @author Lucas Junqueira <lucas@ciclope.art.br>
  */
 class PageSprite extends Sprite
 {
@@ -116,6 +120,11 @@ class PageSprite extends Sprite
 	 */
 	public var loading(get, null):Bool;
 
+	/**
+	 * PageSprite constructor.
+	 * @param	w	the original width
+	 * @param	h	the original height
+	 */
 	public function new(w:Float = 160, h:Float = 90) 
 	{
 		super();

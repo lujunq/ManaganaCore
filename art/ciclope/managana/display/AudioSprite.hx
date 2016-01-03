@@ -14,8 +14,10 @@ import openfl.events.ProgressEvent;
 import openfl.net.URLRequest;
 
 /**
- * ...
- * @author Lucas S. Junqueira
+ * <b>CICLOPE MANAGANA - www.ciclope.com.br / www.managana.org</b><br>
+ * <b>License:</b> GNU LGPL version 3<br><br>
+ * AudioSprite extends BaseSprite to enable simple download and playback of audio files. The supported format/codecs depend on the target/browser.
+ * @author Lucas Junqueira <lucas@ciclope.art.br>
  */
 class AudioSprite extends BaseSprite
 {
@@ -25,6 +27,9 @@ class AudioSprite extends BaseSprite
 	private var _sound:Sound;				// the sound loader
 	private var _channel:SoundChannel;		// sound playback channel
 
+	/**
+	 * AudioSprite constructor.
+	 */
 	public function new() 
 	{
 		super();

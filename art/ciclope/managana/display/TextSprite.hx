@@ -4,11 +4,6 @@ package art.ciclope.managana.display;
 import art.ciclope.managana.display.BaseSprite;
 import art.ciclope.managana.util.MediaInfo;
 import art.ciclope.managana.event.SpriteEvent;
-import openfl.events.Event;
-import openfl.events.IOErrorEvent;
-import openfl.events.SecurityErrorEvent;
-import openfl.net.URLRequest;
-
 
 // OPENFL PACKAGES
 import openfl.text.TextField;
@@ -16,10 +11,16 @@ import openfl.text.TextFieldAutoSize;
 import openfl.text.TextFormat;
 import openfl.text.TextFormatAlign;
 import openfl.net.URLLoader;
+import openfl.events.Event;
+import openfl.events.IOErrorEvent;
+import openfl.events.SecurityErrorEvent;
+import openfl.net.URLRequest;
 
 /**
- * ...
- * @author Lucas S. Junqueira
+ * <b>CICLOPE MANAGANA - www.ciclope.com.br / www.managana.org</b><br>
+ * <b>License:</b> GNU LGPL version 3<br><br>
+ * TextSprite extends BaseSprite to enable simple download and display of text files/strings. Plain text and HTML formatting are supported (resukts vary according to the target).
+ * @author Lucas Junqueira <lucas@ciclope.art.br>
  */
 class TextSprite extends BaseSprite
 {
@@ -96,6 +97,9 @@ class TextSprite extends BaseSprite
 	 */
 	public var scrollV(get, set):Int;
 
+	/**
+	 * TextSprite constructor.
+	 */
 	public function new() 
 	{
 		super();
