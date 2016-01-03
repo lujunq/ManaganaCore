@@ -453,6 +453,7 @@ class PageSprite extends Sprite
 	 */
 	public function loadGraphic(url:String):Bool
 	{
+		trace ('loading graphic', url);
 		return (this._pages[this._other].loadGraphic(url));
 	}
 	
@@ -493,6 +494,7 @@ class PageSprite extends Sprite
 	 */
 	public function loadVideo(url:String):Bool
 	{
+		trace ('loading video', url);
 		return (this._pages[this._other].loadVideo(url));
 	}
 	

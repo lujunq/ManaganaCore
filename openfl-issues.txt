@@ -8,8 +8,10 @@ VIDEO ON HTML5
 		> __stream.__video.videoHeight and __stream.__video.videoWidth at openfl.media.Video does return the right value
 	* NetStream.time doesn't return the current playback time for the loaded video (works on on Flash)
 		> __stream.__video.currentTime at openfl.media.Video return the correct value
+		> "onPlayStatus" event of the NetStream.client object return an object with the right "position" value
 	* NetStream doesn't dispatch the metadata event on video load so there is no way to recover the correct total video duration (get from the metadata info on Flash)
 		> __stream.__video.duration at openfl.media.Video return the correct value
+		> "onPlayStatus" event of the NetStream.client object return an object with the right "duration" value
 
 SOUND ON HTML5
 	* Sound.length always return 0 on HTML5 (ok on Flash)

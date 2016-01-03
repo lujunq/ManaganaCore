@@ -31,9 +31,10 @@ class VideoSprite extends BaseSprite
 	private var _video:Video;						// video output
 	
 	#if html5
-		/* HTML5 video size and click fix */
+		/* HTML5 video size, click and position fix */
 		private var _sizeSet:Bool = false;			// initial size already set?
 		private var _bg:Shape;						// clickable background
+		private var _position:Int = 0;				// current video position
 	#end
 
 	/**
@@ -88,7 +89,7 @@ class VideoSprite extends BaseSprite
 	{
 		if (this._loaded) {
 			#if html5
-				return (this._video.currentTime);
+				return (this._position);
 			#else
 				return (Std.int(this._stream.time));
 			#end
@@ -246,7 +247,7 @@ class VideoSprite extends BaseSprite
 		if (this._loaded) {
 			super.seek(to);
 			#if html5
-				this._video.currentTime = to;
+				this._video.setCurrentTime(to);
 			#else
 				this._stream.seek(to);
 			#end
@@ -292,8 +293,6 @@ class VideoSprite extends BaseSprite
 							this.width = this._width;
 							this.height = this._height;
 						}
-						// video duration
-						this._totalTime = this._video.videoDuration;
 					#end
 					this._loaded = true;
 					this._loading = false;
@@ -356,7 +355,12 @@ class VideoSprite extends BaseSprite
 	/**
 	 * Playstatus data received.
 	 */
-	private function playstatusEvent(data:Dynamic):Void { }
+	private function playstatusEvent(data:Dynamic):Void {
+		#if html5
+			if (data.duration != null) this._totalTime = Std.int(Std.parseFloat(data.duration));
+			if (data.position != null) this._position = Std.int(Std.parseFloat(data.position));
+		#end
+	}
 	
 	/**
 	 * Cuepoint data received.

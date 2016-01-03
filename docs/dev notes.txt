@@ -12,8 +12,6 @@ openfl.media.Video
 	#if html5
 		public var videoWidth(get, null):Float;
 		public var videoHeight(get, null):Float;
-		public var videoDuration(get, null):Int;
-		public var currentTime(get, set):Int;
 		public function get_videoWidth():Float {
 			if (this.__stream != null) {
 				return (__stream.__video.videoWidth);
@@ -35,18 +33,10 @@ openfl.media.Video
 				return (0);
 			}
 		}
-		public function get_currentTime():Int {
-			if (this.__stream != null) {
-				return (Std.int(__stream.__video.currentTime));
-			} else {
-				return (0);
-			}
-		}
-		public function set_currentTime(value:Int):Int {
+		public function setCurrentTime(value:Int):Void {
 			if (this.__stream != null) {
 				__stream.__video.currentTime = value;
 			}
-			return (value);
 		}
 	#end
 	
