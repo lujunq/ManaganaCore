@@ -85,6 +85,7 @@ class VideoSprite extends BaseSprite
 	/**
 	 * Sprite time.
 	 */
+	@:getter(time)
 	override public function get_time():Int
 	{
 		if (this._loaded) {
@@ -97,6 +98,7 @@ class VideoSprite extends BaseSprite
 			return (0);
 		}
 	}
+	@:setter(time)
 	override public function set_time(value:Int):Int
 	{
 		if (this._loaded) this.seek(value);
@@ -106,10 +108,12 @@ class VideoSprite extends BaseSprite
 	/**
 	 * Smoothed display?
 	 */
+	@:getter(smoothing)
 	override public function get_smoothing():Bool
 	{
 		return (this._video.smoothing);
 	}
+	@:setter(smoothing)
 	override public function set_smoothing(value:Bool):Bool
 	{
 		return (this._video.smoothing = value);
@@ -118,6 +122,7 @@ class VideoSprite extends BaseSprite
 	/**
 	 * Content original width.
 	 */
+	@:getter(oWidth)
 	override public function get_oWidth():Float
 	{
 		return (this._video.videoWidth);
@@ -126,6 +131,7 @@ class VideoSprite extends BaseSprite
 	/**
 	 * Content original height.
 	 */
+	@:getter(oHeight)
 	override public function get_oHeight():Float
 	{
 		return (this._video.videoHeight);

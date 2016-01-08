@@ -50,15 +50,9 @@ class GraphicSprite extends BaseSprite
 		// prepare loader
 		this._loader = new URLLoader();
 		this._loader.dataFormat = URLLoaderDataFormat.BINARY;
-		this._loader.addEventListener(Event.COMPLETE, onLoaderComplete);
-		this._loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onLoaderHttpStatus);
-		this._loader.addEventListener(Event.UNLOAD, onLoaderUnload);
-		this._loader.addEventListener(IOErrorEvent.IO_ERROR, onLoaderIoError);
-		this._loader.addEventListener(ProgressEvent.PROGRESS, onLoaderProgress);
 		// prepare display
 		#if flash
 			this._graphicFL = new Loader();
-			this._graphicFL.contentLoaderInfo.addEventListener(Event.COMPLETE, onFLLoaderComplete);
 			this.addChild(this._graphicFL);
 		#else
 			this._graphic = new Bitmap();
@@ -72,6 +66,7 @@ class GraphicSprite extends BaseSprite
 	/**
 	 * Smoothed display?
 	 */
+	@:getter(smoothing)
 	override public function get_smoothing():Bool
 	{
 		#if flash
@@ -89,6 +84,7 @@ class GraphicSprite extends BaseSprite
 			return (this._graphic.smoothing);
 		#end
 	}
+	@:setter(smoothing)
 	override public function set_smoothing(value:Bool):Bool
 	{
 		#if flash
@@ -107,6 +103,7 @@ class GraphicSprite extends BaseSprite
 	/**
 	 * Content original width.
 	 */
+	@:getter(oWidth)
 	override public function get_oWidth():Float
 	{
 		#if flash
@@ -127,6 +124,7 @@ class GraphicSprite extends BaseSprite
 	/**
 	 * Content original height.
 	 */
+	@:getter(oHeight)
 	override public function get_oHeight():Float
 	{
 		#if flash
@@ -155,6 +153,7 @@ class GraphicSprite extends BaseSprite
 			this._graphicFL.width = value;
 		}
 	#else
+		@:setter(width)
 		override public function set_width(value:Float):Float
 		{
 			super.width = value;
@@ -174,6 +173,7 @@ class GraphicSprite extends BaseSprite
 			this._graphicFL.height = value;
 		}
 	#else
+		@:setter(height)
 		override public function set_height(value:Float):Float
 		{
 			super.height = value;
@@ -190,11 +190,14 @@ class GraphicSprite extends BaseSprite
 	override public function dispose():Void
 	{
 		super.dispose();
-		this._loader.removeEventListener(Event.COMPLETE, onLoaderComplete);
-		this._loader.removeEventListener(HTTPStatusEvent.HTTP_STATUS, onLoaderHttpStatus);
-		this._loader.removeEventListener(Event.UNLOAD, onLoaderUnload);
-		this._loader.removeEventListener(IOErrorEvent.IO_ERROR, onLoaderIoError);
-		this._loader.removeEventListener(ProgressEvent.PROGRESS, onLoaderProgress);
+		if (this._loader.hasEventListener(Event.COMPLETE)) {
+			try { this._loader.close(); } catch (e:Dynamic) { }
+			this._loader.removeEventListener(Event.COMPLETE, onLoaderComplete);
+			this._loader.removeEventListener(HTTPStatusEvent.HTTP_STATUS, onLoaderHttpStatus);
+			this._loader.removeEventListener(Event.UNLOAD, onLoaderUnload);
+			this._loader.removeEventListener(IOErrorEvent.IO_ERROR, onLoaderIoError);
+			this._loader.removeEventListener(ProgressEvent.PROGRESS, onLoaderProgress);
+		}	
 		this._loader = null;
 		#if flash
 			if (this._graphicFL.content != null) {
@@ -203,7 +206,9 @@ class GraphicSprite extends BaseSprite
 					bmp.bitmapData.dispose();
 				}
 			}
-			this._graphicFL.contentLoaderInfo.removeEventListener(Event.COMPLETE, onFLLoaderComplete);
+			if (this._graphicFL.contentLoaderInfo.hasEventListener(Event.COMPLETE)) {
+				this._graphicFL.contentLoaderInfo.removeEventListener(Event.COMPLETE, onFLLoaderComplete);
+			}
 			this._graphicFL = null;
 		#else
 			if (this._graphic.bitmapData != null) this._graphic.bitmapData.dispose();
@@ -226,6 +231,11 @@ class GraphicSprite extends BaseSprite
 		} else {
 			// start the download
 			this._loading = true;
+			this._loader.addEventListener(Event.COMPLETE, onLoaderComplete);
+			this._loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onLoaderHttpStatus);
+			this._loader.addEventListener(Event.UNLOAD, onLoaderUnload);
+			this._loader.addEventListener(IOErrorEvent.IO_ERROR, onLoaderIoError);
+			this._loader.addEventListener(ProgressEvent.PROGRESS, onLoaderProgress);
 			this._loader.load(new URLRequest(this._tryURL));
 			return (true);
 		}
@@ -238,7 +248,13 @@ class GraphicSprite extends BaseSprite
 	 */
 	private function onLoaderComplete(evt:Event):Void
 	{
+		this._loader.removeEventListener(Event.COMPLETE, onLoaderComplete);
+		this._loader.removeEventListener(HTTPStatusEvent.HTTP_STATUS, onLoaderHttpStatus);
+		this._loader.removeEventListener(Event.UNLOAD, onLoaderUnload);
+		this._loader.removeEventListener(IOErrorEvent.IO_ERROR, onLoaderIoError);
+		this._loader.removeEventListener(ProgressEvent.PROGRESS, onLoaderProgress);
 		#if flash
+			this._graphicFL.contentLoaderInfo.addEventListener(Event.COMPLETE, onFLLoaderComplete);
 			this._graphicFL.loadBytes(this._loader.data);
 		#else
 			if (this._graphic.bitmapData != null) this._graphic.bitmapData.dispose();
@@ -282,6 +298,11 @@ class GraphicSprite extends BaseSprite
 	 */
 	private function onLoaderIoError(evt:Event):Void
 	{
+		this._loader.removeEventListener(Event.COMPLETE, onLoaderComplete);
+		this._loader.removeEventListener(HTTPStatusEvent.HTTP_STATUS, onLoaderHttpStatus);
+		this._loader.removeEventListener(Event.UNLOAD, onLoaderUnload);
+		this._loader.removeEventListener(IOErrorEvent.IO_ERROR, onLoaderIoError);
+		this._loader.removeEventListener(ProgressEvent.PROGRESS, onLoaderProgress);
 		this._tryURL = '';
 		this._loading = false;
 		this._loaded = false;
@@ -315,6 +336,7 @@ class GraphicSprite extends BaseSprite
 	 */
 	private function onFLLoaderComplete(evt:Event):Void
 	{
+		this._graphicFL.contentLoaderInfo.removeEventListener(Event.COMPLETE, onFLLoaderComplete);
 		this._loaded = true;
 		if (this.playOnLoad) {
 			this._state = MediaInfo.STATE_PLAY;

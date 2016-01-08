@@ -3,6 +3,7 @@ package art.ciclope.managana.display;
 // CICLOPE CLASSES
 import art.ciclope.managana.event.SpriteEvent;
 import art.ciclope.managana.util.MediaInfo;
+import openfl.geom.ColorTransform;
 
 // OPENFL PACKAGES
 import openfl.display.Sprite;
@@ -40,53 +41,56 @@ class BaseSprite extends Sprite
 	private var _mediaType:String = MediaInfo.TYPE_UNKNOWN;			// sprite media type
 	private var _width:Float = 160;									// sprite width
 	private var _height:Float = 90;									// sprite height
+	private var _ctransform:ColorTransform;							// for color transformations
 	
 	// GETTERS/SETTERS
 	
-	/**
-	 * Currently loading some content?
-	 */
-	public var loading(get, null):Bool;
-	
-	/**
-	 * The current media playback state.
-	 */
-	public var state(get, null):String;
-	
-	/**
-	 * Sprite time.
-	 */
-	public var time(get, set):Int;
-	
-	/**
-	 * Sprite total time.
-	 */
-	public var totalTime(get, set):Int;
-	
-	/**
-	 * Loaded content URL.
-	 */
-	public var url(get, set):String;
-	
-	/**
-	 * Sprite media type.
-	 */
-	public var mediaType(get, null):String;
-	
-	/**
-	 * Smoothed display?
-	 */
-	public var smoothing(get, set):Bool;
-	
-	/**
-	 * Content original width.
-	 */
-	public var oWidth(get, null):Float;
-	
-	/**
-	 * Content original height.
-	 */
-	public var oHeight(get, null):Float;
+	#if !flash
+		/**
+		 * Currently loading some content?
+		 */
+		public var loading(get, never):Bool;
+		
+		/**
+		 * The current media playback state.
+		 */
+		public var state(get, never):String;
+		
+		/**
+		 * Sprite time.
+		 */
+		public var time(get, set):Int;
+		
+		/**
+		 * Sprite total time.
+		 */
+		public var totalTime(get, set):Int;
+		
+		/**
+		 * Loaded content URL.
+		 */
+		public var url(get, set):String;
+		
+		/**
+		 * Sprite media type.
+		 */
+		public var mediaType(get, never):String;
+		
+		/**
+		 * Smoothed display?
+		 */
+		public var smoothing(get, set):Bool;
+		
+		/**
+		 * Content original width.
+		 */
+		public var oWidth(get, never):Float;
+		
+		/**
+		 * Content original height.
+		 */
+		public var oHeight(get, never):Float;
+	#end
 
 
 	/**
@@ -95,6 +99,7 @@ class BaseSprite extends Sprite
 	public function new() 
 	{
 		super();
+		this._ctransform = new ColorTransform();
 	}
 	
 	// GETTERS/SETTERS
@@ -102,6 +107,7 @@ class BaseSprite extends Sprite
 	/**
 	 * Currently loading some content?
 	 */
+	@:getter(loading)
 	public function get_loading():Bool
 	{
 		return (this._loading);
@@ -110,6 +116,7 @@ class BaseSprite extends Sprite
 	/**
 	 * The current media playback state.
 	 */
+	@:getter(state)
 	public function get_state():String
 	{
 		return (this._state);
@@ -118,10 +125,12 @@ class BaseSprite extends Sprite
 	/**
 	 * Sprite time.
 	 */
+	@:getter(time)
 	public function get_time():Int
 	{
 		return (this._time);
 	}
+	@:setter(time)
 	public function set_time(value:Int):Int
 	{
 		return (this._time = value);
@@ -130,10 +139,12 @@ class BaseSprite extends Sprite
 	/**
 	 * Sprite total time.
 	 */
+	@:getter(totalTime)
 	public function get_totalTime():Int
 	{
 		return (this._totalTime);
 	}
+	@:setter(totalTime)
 	public function set_totalTime(value:Int):Int
 	{
 		return (this._totalTime = value);
@@ -142,10 +153,12 @@ class BaseSprite extends Sprite
 	/**
 	 * Loaded content URL.
 	 */
+	@:getter(url)
 	public function get_url():String
 	{
 		return (this._url);
 	}
+	@:setter(url)
 	public function set_url(value:String):String
 	{
 		this.load(value);
@@ -155,6 +168,7 @@ class BaseSprite extends Sprite
 	/**
 	 * Sprite media type.
 	 */
+	@:getter(mediaType)
 	public function get_mediaType():String
 	{
 		return (this._mediaType);
@@ -163,10 +177,12 @@ class BaseSprite extends Sprite
 	/**
 	 * Smoothed display?
 	 */
+	@:getter(smoothing)
 	public function get_smoothing():Bool
 	{
 		return (true);
 	}
+	@:setter(smoothing)
 	public function set_smoothing(value:Bool):Bool
 	{
 		return (true);
@@ -175,6 +191,7 @@ class BaseSprite extends Sprite
 	/**
 	 * Content original width.
 	 */
+	@:getter(oWidth)
 	public function get_oWidth():Float
 	{
 		return (0);
@@ -183,6 +200,7 @@ class BaseSprite extends Sprite
 	/**
 	 * Content original height.
 	 */
+	@:getter(oHeight)
 	public function get_oHeight():Float
 	{
 		return (0);
@@ -203,10 +221,12 @@ class BaseSprite extends Sprite
 			this._width = value;
 		}
 	#else
+		@:getter(width)
 		override public function get_width():Float
 		{
 			return (this._width);
 		}
+		@:setter(width)
 		override public function set_width(value:Float):Float
 		{
 			return (this._width = value);
@@ -228,10 +248,12 @@ class BaseSprite extends Sprite
 			this._height = value;
 		}
 	#else
+		@:getter(height)
 		override public function get_height():Float
 		{
 			return (this._height);
 		}
+		@:setter(height)
 		override public function set_height(value:Float):Float
 		{
 			return (this._height = value);
@@ -248,6 +270,7 @@ class BaseSprite extends Sprite
 		this._tryURL = null;
 		this._url = null;
 		this._state = null;
+		this._ctransform = null;
 		this.removeChildren();
 	}
 	
@@ -328,6 +351,48 @@ class BaseSprite extends Sprite
 		if (this._loaded) {
 			this.pause();
 			this.seek(0);
+		}
+	}
+	
+	/**
+	 * Set the red color offset.
+	 * @param	to	the new color offset
+	 */
+	public function setRed(to:Float):Void
+	{
+		if ((to >= 0) && (to <= 255)) {
+			this._ctransform.redOffset = to;
+			#if flash
+				this.transform.colorTransform = this._ctransform;
+			#end
+		}
+	}
+	
+	/**
+	 * Set the green color offset.
+	 * @param	to	the new color offset
+	 */
+	public function setGreen(to:Float):Void
+	{
+		if ((to >= 0) && (to <= 255)) {
+			this._ctransform.greenOffset = to;
+			#if flash
+				this.transform.colorTransform = this._ctransform;
+			#end
+		}
+	}
+	
+	/**
+	 * Set the blue color offset.
+	 * @param	to	the new color offset
+	 */
+	public function setBlue(to:Float):Void
+	{
+		if ((to >= 0) && (to <= 255)) {
+			this._ctransform.blueOffset = to;
+			#if flash
+				this.transform.colorTransform = this._ctransform;
+			#end
 		}
 	}
 	

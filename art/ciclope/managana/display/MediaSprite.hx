@@ -8,6 +8,7 @@ import art.ciclope.managana.display.VideoSprite;
 import art.ciclope.managana.display.BaseSprite;
 import art.ciclope.managana.util.MediaInfo;
 import art.ciclope.managana.event.SpriteEvent;
+import openfl.geom.ColorTransform;
 
 // OPENFL PACKAGES
 import openfl.display.Sprite;
@@ -33,108 +34,111 @@ class MediaSprite extends Sprite
 	
 	private var _currentType:String = MediaInfo.TYPE_UNKNOWN;		// current media type on display
 	private var _tryType:String = '';								// media type attempting to download
+	private var _ctransform:ColorTransform;							// color transformation
 	
 	// GETTERS/SETTERS
 	
-	/**
-	 * Current media type on display.
-	 */
-	public var mediaType(get, null):String;
-	
-	/**
-	 * Start the media playback as soon as it is loaded?
-	 */
-	public var playOnLoad(get, set):Bool;
-	
-	/**
-	 * Text display mode.
-	 */
-	public var textDisplay(get, set):String;
-	
-	/**
-	 * Text content alignment.
-	 */
-	public var textAlign(get, set):String;
-	
-	/**
-	 * Text font name.
-	 */
-	public var fontName(get, set):String;
-	
-	/**
-	 * Text font size.
-	 */
-	public var fontSize(get, set):Int;
-	
-	/**
-	 * Text font color.
-	 */
-	public var fontColor(get, set):Int;
-	
-	/**
-	 * Is text bold?
-	 */
-	public var fontBold(get, set):Bool;
-	
-	/**
-	 * Is text italic?
-	 */
-	public var fontItalic(get, set):Bool;
-	
-	/**
-	 * Text leading.
-	 */
-	public var leading(get, set):Int;
-	
-	/**
-	 * Space between chars.
-	 */
-	public var letterSpacing(get, set):Float;
-	
-	/**
-	 * Maximum number of chars of plain text to display (<= 0 for no limit, does not affect HTML).
-	 */
-	public var maxChars(get, set):Int;
-	
-	/**
-	 * Currently loaded media total time.
-	 */
-	public var totalTime(get, null):Int;
-	
-	/**
-	 * Currently loaded media time.
-	 */
-	public var time(get, null):Int;
-	
-	/**
-	 * Currently loaded media url.
-	 */
-	public var url(get, null):String;
-	
-	/**
-	 * Currently loaded media playback state.
-	 */
-	public var state(get, null):String;
-	
-	/**
-	 * Currently loading a content?
-	 */
-	public var loading(get, null):Bool;
-	
-	/**
-	 * Smoothed display?
-	 */
-	public var smoothing(get, set):Bool;
-	
-	/**
-	 * Content original width.
-	 */
-	public var oWidth(get, null):Float;
-	
-	/**
-	 * Content original height.
-	 */
-	public var oHeight(get, null):Float;
+	#if !flash
+		/**
+		 * Current media type on display.
+		 */
+		public var mediaType(get, never):String;
+		
+		/**
+		 * Start the media playback as soon as it is loaded?
+		 */
+		public var playOnLoad(get, set):Bool;
+		
+		/**
+		 * Text display mode.
+		 */
+		public var textDisplay(get, set):String;
+		
+		/**
+		 * Text content alignment.
+		 */
+		public var textAlign(get, set):String;
+		
+		/**
+		 * Text font name.
+		 */
+		public var fontName(get, set):String;
+		
+		/**
+		 * Text font size.
+		 */
+		public var fontSize(get, set):Int;
+		
+		/**
+		 * Text font color.
+		 */
+		public var fontColor(get, set):Int;
+		
+		/**
+		 * Is text bold?
+		 */
+		public var fontBold(get, set):Bool;
+		
+		/**
+		 * Is text italic?
+		 */
+		public var fontItalic(get, set):Bool;
+		
+		/**
+		 * Text leading.
+		 */
+		public var leading(get, set):Int;
+		
+		/**
+		 * Space between chars.
+		 */
+		public var letterSpacing(get, set):Float;
+		
+		/**
+		 * Maximum number of chars of plain text to display (<= 0 for no limit, does not affect HTML).
+		 */
+		public var maxChars(get, set):Int;
+		
+		/**
+		 * Currently loaded media total time.
+		 */
+		public var totalTime(get, never):Int;
+		
+		/**
+		 * Currently loaded media time.
+		 */
+		public var time(get, never):Int;
+		
+		/**
+		 * Currently loaded media url.
+		 */
+		public var url(get, never):String;
+		
+		/**
+		 * Currently loaded media playback state.
+		 */
+		public var state(get, never):String;
+		
+		/**
+		 * Currently loading a content?
+		 */
+		public var loading(get, never):Bool;
+		
+		/**
+		 * Smoothed display?
+		 */
+		public var smoothing(get, set):Bool;
+		
+		/**
+		 * Content original width.
+		 */
+		public var oWidth(get, never):Float;
+		
+		/**
+		 * Content original height.
+		 */
+		public var oHeight(get, never):Float;
+	#end
 	
 	/**
 	 * MediaSprite constructor.
@@ -190,6 +194,9 @@ class MediaSprite extends Sprite
 		// set initial smoothing
 		this.smoothing = true;
 		
+		// transformations
+		this._ctransform = new ColorTransform();
+		
 	}
 	
 	// GETTERS/SETTERS
@@ -197,6 +204,7 @@ class MediaSprite extends Sprite
 	/**
 	 * Current media type on display.
 	 */
+	@:getter(mediaType)
 	public function get_mediaType():String
 	{
 		return (this._currentType);
@@ -205,10 +213,12 @@ class MediaSprite extends Sprite
 	/**
 	 * Start the media playback as soon as it is loaded?
 	 */
+	@:getter(playOnLoad)
 	public function get_playOnLoad():Bool
 	{
 		return (this._grSprite.playOnLoad);
 	}
+	@:setter(playOnLoad)
 	public function set_playOnLoad(value:Bool):Bool
 	{
 		this._grSprite.playOnLoad = value;
@@ -221,10 +231,12 @@ class MediaSprite extends Sprite
 	/**
 	 * Text display mode.
 	 */
+	@:getter(textDisplay)
 	public function get_textDisplay():String
 	{
 		return (this._txSprite.textDisplay);
 	}
+	@:setter(textDisplay)
 	public function set_textDisplay(value:String):String
 	{
 		return (this._txSprite.textDisplay = value);
@@ -233,10 +245,12 @@ class MediaSprite extends Sprite
 	/**
 	 * Text content alignment.
 	 */
+	@:getter(textAlign)
 	public function get_textAlign():String
 	{
 		return (this._txSprite.textAlign);
 	}
+	@:setter(textAlign)
 	public function set_textAlign(value:String):String
 	{
 		return (this._txSprite.textAlign = value);
@@ -245,10 +259,12 @@ class MediaSprite extends Sprite
 	/**
 	 * Text font name.
 	 */
+	@:getter(fontName)
 	public function get_fontName():String
 	{
 		return (this._txSprite.fontName);
 	}
+	@:setter(fontName)
 	public function set_fontName(value:String):String
 	{
 		return (this._txSprite.fontName = value);
@@ -257,10 +273,12 @@ class MediaSprite extends Sprite
 	/**
 	 * Text font size.
 	 */
+	@:getter(fontSize)
 	public function get_fontSize():Int
 	{
 		return (this._txSprite.fontSize);
 	}
+	@:setter(fontSize)
 	public function set_fontSize(value:Int):Int
 	{
 		return (this._txSprite.fontSize = value);
@@ -269,10 +287,12 @@ class MediaSprite extends Sprite
 	/**
 	 * Text font color.
 	 */
+	@:getter(fontColor)
 	public function get_fontColor():Int
 	{
 		return (this._txSprite.fontColor);
 	}
+	@:setter(fontColor)
 	public function set_fontColor(value:Int):Int
 	{
 		return (this._txSprite.fontColor = value);
@@ -281,10 +301,12 @@ class MediaSprite extends Sprite
 	/**
 	 * Is text bold?
 	 */
+	@:getter(fontBold)
 	public function get_fontBold():Bool
 	{
 		return (this._txSprite.fontBold);
 	}
+	@:setter(fontBold)
 	public function set_fontBold(value:Bool):Bool
 	{
 		return (this._txSprite.fontBold = value);
@@ -293,10 +315,12 @@ class MediaSprite extends Sprite
 	/**
 	 * Is text italic?
 	 */
+	@:getter(fontItalic)
 	public function get_fontItalic():Bool
 	{
 		return (this._txSprite.fontItalic);
 	}
+	@:setter(fontItalic)
 	public function set_fontItalic(value:Bool):Bool
 	{
 		return (this._txSprite.fontItalic = value);
@@ -305,10 +329,12 @@ class MediaSprite extends Sprite
 	/**
 	 * Text leading.
 	 */
+	@:getter(leading)
 	public function get_leading():Int
 	{
 		return (this._txSprite.leading);
 	}
+	@:setter(leading)
 	public function set_leading(value:Int):Int
 	{
 		return (this._txSprite.leading = value);
@@ -317,10 +343,12 @@ class MediaSprite extends Sprite
 	/**
 	 * Space between chars.
 	 */
+	@:getter(letterSpacing)
 	public function get_letterSpacing():Float
 	{
 		return (this._txSprite.letterSpacing);
 	}
+	@:setter(letterSpacing)
 	public function set_letterSpacing(value:Float):Float
 	{
 		return (this._txSprite.letterSpacing = value);
@@ -329,10 +357,12 @@ class MediaSprite extends Sprite
 	/**
 	 * Maximum number of chars of plain text to display (<= 0 for no limit, does not affect HTML).
 	 */
+	@:getter(maxChars)
 	public function get_maxChars():Int
 	{
 		return (this._txSprite.maxChars);
 	}
+	@:setter(maxChars)
 	public function set_maxChars(value:Int):Int
 	{
 		return (this._txSprite.maxChars = value);
@@ -341,6 +371,7 @@ class MediaSprite extends Sprite
 	/**
 	 * Currently loaded media total time.
 	 */
+	@:getter(totalTime)
 	public function get_totalTime():Int
 	{
 		if (this._currentType != MediaInfo.TYPE_UNKNOWN) {
@@ -353,10 +384,12 @@ class MediaSprite extends Sprite
 	/**
 	 * Smoothed display?
 	 */
+	@:getter(smoothing)
 	public function get_smoothing():Bool
 	{
 		return (this._vdSprite.smoothing);
 	}
+	@:setter(smoothing)
 	public function set_smoothing(value:Bool):Bool
 	{
 		this._grSprite.smoothing = value;
@@ -367,6 +400,7 @@ class MediaSprite extends Sprite
 	/**
 	 * Content original width.
 	 */
+	@:getter(oWidth)
 	public function get_oWidth():Float
 	{
 		if (this._currentType != MediaInfo.TYPE_UNKNOWN) {
@@ -379,6 +413,7 @@ class MediaSprite extends Sprite
 	/**
 	 * Content original height.
 	 */
+	@:getter(oHeight)
 	public function get_oHeight():Float
 	{
 		if (this._currentType != MediaInfo.TYPE_UNKNOWN) {
@@ -391,6 +426,7 @@ class MediaSprite extends Sprite
 	/**
 	 * Currently loaded media time.
 	 */
+	@:getter(time)
 	public function get_time():Int
 	{
 		if (this._currentType != MediaInfo.TYPE_UNKNOWN) {
@@ -403,6 +439,7 @@ class MediaSprite extends Sprite
 	/**
 	 * Currently loaded media url.
 	 */
+	@:getter(url)
 	public function get_url():String
 	{
 		if (this._currentType != MediaInfo.TYPE_UNKNOWN) {
@@ -415,6 +452,7 @@ class MediaSprite extends Sprite
 	/**
 	 * Currently loaded media playback state.
 	 */
+	@:getter(state)
 	public function get_state():String
 	{
 		if (this._currentType != MediaInfo.TYPE_UNKNOWN) {
@@ -427,6 +465,7 @@ class MediaSprite extends Sprite
 	/**
 	 * Currently loading a content?
 	 */
+	@:getter(loading)
 	public function get_loading():Bool
 	{
 		if (this._tryType != '') {
@@ -657,6 +696,60 @@ class MediaSprite extends Sprite
 	}
 	
 	/**
+	 * Set the red color offset.
+	 * @param	to	the new color offset
+	 */
+	public function setRed(to:Float):Void
+	{
+		if ((to >= 0) && (to <= 255)) {
+			this._ctransform.redOffset = to;
+			#if flash
+				this.transform.colorTransform = this._ctransform;
+			#else
+				this._grSprite.setRed(to);
+				this._vdSprite.setRed(to);
+				this._txSprite.setRed(to);
+			#end
+		}
+	}
+	
+	/**
+	 * Set the green color offset.
+	 * @param	to	the new color offset
+	 */
+	public function setGreen(to:Float):Void
+	{
+		if ((to >= 0) && (to <= 255)) {
+			this._ctransform.greenOffset = to;
+			#if flash
+				this.transform.colorTransform = this._ctransform;
+			#else
+				this._grSprite.setGreen(to);
+				this._vdSprite.setGreen(to);
+				this._txSprite.setGreen(to);
+			#end
+		}
+	}
+	
+	/**
+	 * Set the blue color offset.
+	 * @param	to	the new color offset
+	 */
+	public function setBlue(to:Float):Void
+	{
+		if ((to >= 0) && (to <= 255)) {
+			this._ctransform.blueOffset = to;
+			#if flash
+				this.transform.colorTransform = this._ctransform;
+			#else
+				this._grSprite.setBlue(to);
+				this._vdSprite.setBlue(to);
+				this._txSprite.setBlue(to);
+			#end
+		}
+	}
+	
+	/**
 	 * Release resources used by the object.
 	 */
 	public function dispose():Void
@@ -689,6 +782,7 @@ class MediaSprite extends Sprite
 		this._vdSprite.dispose();
 		this._vdSprite = null;
 		this._currentType = null;
+		this._ctransform = null;
 	}
 	
 	// PRIVATE METHODS

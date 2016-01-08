@@ -92,10 +92,12 @@ class TextSprite extends BaseSprite
 	
 	// GETTERS/SETTERS
 	
-	/**
-	 * Vertical text scrolling.
-	 */
-	public var scrollV(get, set):Int;
+	#if !flash
+		/**
+		 * Vertical text scrolling.
+		 */
+		public var scrollV(get, set):Int;
+	#end
 
 	/**
 	 * TextSprite constructor.
@@ -117,9 +119,6 @@ class TextSprite extends BaseSprite
 		this._text.defaultTextFormat = this._textFormat;
 		// prepare loader
 		this._loader = new URLLoader();
-		this._loader.addEventListener(Event.COMPLETE, completeHandler);
-		this._loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
-		this._loader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
 	}
 	
 	// GETTERS/SETTERES
@@ -208,10 +207,12 @@ class TextSprite extends BaseSprite
 	/**
 	 * Vertical scroll position.
 	 */
+	@:getter(scrollV)
 	public function get_scrollV():Int
 	{
 		return (this._text.scrollV);
 	}
+	@:setter(scrollV)
 	public function set_scrollV(value:Int):Int
 	{
 		if ((this._text.scrollV != value) && (value <= this._text.maxScrollV)) this._text.scrollV = value;
@@ -221,6 +222,7 @@ class TextSprite extends BaseSprite
 	/**
 	 * Content original width.
 	 */
+	@:getter(oWidth)
 	override public function get_oWidth():Float
 	{
 		if ((this.textDisplay != MediaInfo.TEXTDISPLAY_ARTISTIC) || (this._textMode == MediaInfo.TEXTMODE_HTML)) {
@@ -233,6 +235,7 @@ class TextSprite extends BaseSprite
 	/**
 	 * Content original height.
 	 */
+	@:getter(oHeight)
 	override public function get_oHeight():Float
 	{
 		if ((this.textDisplay != MediaInfo.TEXTDISPLAY_ARTISTIC) || (this._textMode == MediaInfo.TEXTMODE_HTML)) {
@@ -381,6 +384,9 @@ class TextSprite extends BaseSprite
 			return (false);
 		} else {
 			// start the download
+			this._loader.addEventListener(Event.COMPLETE, completeHandler);
+			this._loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
+			this._loader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
 			this._loading = true;
 			this._tryMode = MediaInfo.TEXTMODE_PLAIN;
 			this._loader.load(new URLRequest(this._tryURL));
@@ -400,6 +406,9 @@ class TextSprite extends BaseSprite
 			return (false);
 		} else {
 			// start the download
+			this._loader.addEventListener(Event.COMPLETE, completeHandler);
+			this._loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
+			this._loader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
 			this._loading = true;
 			this._tryMode = MediaInfo.TEXTMODE_HTML;
 			this._loader.load(new URLRequest(this._tryURL));
@@ -421,9 +430,12 @@ class TextSprite extends BaseSprite
 		this.textAlign = null;
 		this.textDisplay = null;
 		this._textMode = null;
-		this._loader.removeEventListener(Event.COMPLETE, completeHandler);
-		this._loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
-		this._loader.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);
+		if (this._loader.hasEventListener(Event.COMPLETE)) {
+			try { this._loader.close(); } catch (e:Dynamic) { }
+			this._loader.removeEventListener(Event.COMPLETE, completeHandler);
+			this._loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
+			this._loader.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);
+		}
 		this._loader = null;
 		this._tryMode = null;
 	}
@@ -435,6 +447,9 @@ class TextSprite extends BaseSprite
 	 */
 	private function completeHandler(evt:Event):Void
 	{
+		this._loader.removeEventListener(Event.COMPLETE, completeHandler);
+		this._loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
+		this._loader.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);
 		this._url = this._tryURL;
 		this._tryURL = '';
 		var txt:String = cast(this._loader.data, String);
@@ -450,6 +465,9 @@ class TextSprite extends BaseSprite
 	 */
 	private function errorHandler(evt:Event):Void
 	{
+		this._loader.removeEventListener(Event.COMPLETE, completeHandler);
+		this._loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, errorHandler);
+		this._loader.removeEventListener(IOErrorEvent.IO_ERROR, errorHandler);
 		this._tryURL = '';
 		this._loading = false;
 		this._loaded = false;

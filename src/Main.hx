@@ -5,6 +5,7 @@ import openfl.display.Loader;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.events.MouseEvent;
+import openfl.geom.ColorTransform;
 import openfl.Lib;
 import openfl.Assets;
 import openfl.net.URLRequest;
@@ -121,10 +122,24 @@ class Main extends Sprite
 		this.addChild(this._psprite);
 		this._psprite.loadGraphic('http://localhost:2000/logo.png');
 		this._psprite.transition = PageSprite.TRANSITION_FROMRIGHT;
+		
+		this._psprite.x = 0;
+		this._psprite.y = 0;
+		this._psprite.rotation = 45;
+		
+		this._psprite.setRed(250);
+		
 		//this._psprite.loadVideo('http://localhost:2000/sonic.mp4');
+		
+		/*
+		this._sprite = new GraphicSprite();
+		this.addChild(this._sprite);
+		this._sprite.load('logo.png');
+		*/
 		
 		// Assets:
 		// openfl.Assets.getBitmapData("img/assetname.jpg");
+		
 	}
 	
 	private function onInterval():Void
@@ -149,6 +164,5 @@ class Main extends Sprite
 		trace ('click');
 		if (this._psprite.url == 'http://localhost:2000/logo.png') this._psprite.loadGraphic('http://localhost:2000/logoofl.png');
 			else this._psprite.loadGraphic('http://localhost:2000/logo.png');
-			
 	}
 }

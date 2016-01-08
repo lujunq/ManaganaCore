@@ -34,13 +34,6 @@ class AudioSprite extends BaseSprite
 	{
 		super();
 		this._mediaType = MediaInfo.TYPE_AUDIO;
-		
-		// prepare sound
-		this._sound = new Sound();
-		this._sound.addEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
-		this._sound.addEventListener(Event.OPEN, openHandler);
-		this._sound.addEventListener(Event.COMPLETE, completeHandler);
-		this._sound.addEventListener(ProgressEvent.PROGRESS, progressHandler);
 	}
 	
 	// GETTERS/SETTERS
@@ -48,6 +41,7 @@ class AudioSprite extends BaseSprite
 	/**
 	 * Sprite time.
 	 */
+	@:getter(time)
 	override public function get_time():Int
 	{
 		if (this.state == MediaInfo.STATE_PAUSE) {
@@ -58,6 +52,7 @@ class AudioSprite extends BaseSprite
 			return (0);
 		}
 	}
+	@:setter(time)
 	override public function set_time(value:Int):Int
 	{
 		if (this._loaded) this.seek(value);
@@ -82,10 +77,12 @@ class AudioSprite extends BaseSprite
 			// remove any previous sound
 			if (this._sound != null) {
 				try { this._sound.close(); } catch (e:Dynamic) { }
-				this._sound.removeEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
-				this._sound.removeEventListener(Event.OPEN, openHandler);
-				this._sound.removeEventListener(Event.COMPLETE, completeHandler);
-				this._sound.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
+				if (this._sound.hasEventListener(Event.OPEN)) {
+					this._sound.removeEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
+					this._sound.removeEventListener(Event.OPEN, openHandler);
+					this._sound.removeEventListener(Event.COMPLETE, completeHandler);
+					this._sound.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
+				}
 				this._sound = null;
 			}
 			// prepare sound
@@ -176,10 +173,12 @@ class AudioSprite extends BaseSprite
 		super.dispose();
 		if (this._sound != null) {
 			try { this._sound.close(); } catch (e:Dynamic) { }
-			this._sound.removeEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
-			this._sound.removeEventListener(Event.OPEN, openHandler);
-			this._sound.removeEventListener(Event.COMPLETE, completeHandler);
-			this._sound.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
+			if (this._sound.hasEventListener(Event.OPEN)) {
+				this._sound.removeEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
+				this._sound.removeEventListener(Event.OPEN, openHandler);
+				this._sound.removeEventListener(Event.COMPLETE, completeHandler);
+				this._sound.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
+			}
 			this._sound = null;
 		}
 		if (this._channel != null) {
@@ -200,6 +199,12 @@ class AudioSprite extends BaseSprite
 		this._loading = false;
 		this._loaded = false;
 		this._state = MediaInfo.STATE_UNKNOWN;
+		if (this._sound.hasEventListener(Event.OPEN)) {
+			this._sound.removeEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
+			this._sound.removeEventListener(Event.OPEN, openHandler);
+			this._sound.removeEventListener(Event.COMPLETE, completeHandler);
+			this._sound.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
+		}
 		this.dispatchEvent(new SpriteEvent(SpriteEvent.CONTENT_LOAD_ERROR, MediaInfo.TYPE_AUDIO));
 	}
 	
@@ -220,6 +225,12 @@ class AudioSprite extends BaseSprite
 		this._loading = false;
 		this._url = this._tryURL;
 		this._tryURL = '';
+		if (this._sound.hasEventListener(Event.OPEN)) {
+			this._sound.removeEventListener(IOErrorEvent.IO_ERROR, ioErrorHandler);
+			this._sound.removeEventListener(Event.OPEN, openHandler);
+			this._sound.removeEventListener(Event.COMPLETE, completeHandler);
+			this._sound.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
+		}
 		if (this.playOnLoad) {
 			this.play(0);
 		}

@@ -3,6 +3,7 @@ package art.ciclope.managana.display;
 // CICLOPE CLASSES
 import art.ciclope.managana.display.MediaSprite;
 import art.ciclope.managana.event.SpriteEvent;
+import openfl.geom.ColorTransform;
 
 // OPENFL PACKAGES
 import openfl.display.Shape;
@@ -15,6 +16,7 @@ import motion.Actuate;
  * <b>CICLOPE MANAGANA - www.ciclope.com.br / www.managana.org</b><br>
  * <b>License:</b> GNU LGPL version 3<br><br>
  * PageSprite provides a fancy way to load all Managana-supported media files with animated transitions.
+ * The class also sets the object rotation pivot to the center of the display.
  * @author Lucas Junqueira <lucas@ciclope.art.br>
  */
 class PageSprite extends Sprite
@@ -58,6 +60,9 @@ class PageSprite extends Sprite
 	private var _current:Int = 0;				// current displayed page
 	private var _mask:Shape;					// display mask for pages
 	private var _tweening:Bool = false;			// playing media change animation?
+	private var _setX:Float = 0;				// display X position
+	private var _setY:Float = 0;				// display Y position
+	private var _ctransform:ColorTransform;		// color transformation
 	#if html5
 		private var _click:Shape;				// background for click handling
 	#end
@@ -76,107 +81,109 @@ class PageSprite extends Sprite
 	
 	// GETTERS/SETTERS
 	
-	private var _other(get, null):Int;			// media sprite not shown at the moment
-	
-	/**
-	 * Current media type on display.
-	 */
-	public var mediaType(get, null):String;
-	
-	/**
-	 * Start the media playback as soon as it is loaded?
-	 */
-	public var playOnLoad(get, set):Bool;
-	
-	/**
-	 * Text display mode.
-	 */
-	public var textDisplay(get, set):String;
-	
-	/**
-	 * Text content alignment.
-	 */
-	public var textAlign(get, set):String;
-	
-	/**
-	 * Text font name.
-	 */
-	public var fontName(get, set):String;
-	
-	/**
-	 * Text font size.
-	 */
-	public var fontSize(get, set):Int;
-	
-	/**
-	 * Text font color.
-	 */
-	public var fontColor(get, set):Int;
-	
-	/**
-	 * Is text bold?
-	 */
-	public var fontBold(get, set):Bool;
-	
-	/**
-	 * Is text italic?
-	 */
-	public var fontItalic(get, set):Bool;
-	
-	/**
-	 * Text leading.
-	 */
-	public var leading(get, set):Int;
-	
-	/**
-	 * Space between chars.
-	 */
-	public var letterSpacing(get, set):Float;
-	
-	/**
-	 * Maximum number of chars of plain text to display (<= 0 for no limit, does not affect HTML).
-	 */
-	public var maxChars(get, set):Int;
-	
-	/**
-	 * Currently loaded media total time.
-	 */
-	public var totalTime(get, null):Int;
-	
-	/**
-	 * Currently loaded media time.
-	 */
-	public var time(get, null):Int;
-	
-	/**
-	 * Currently loaded media url.
-	 */
-	public var url(get, null):String;
-	
-	/**
-	 * Currently loaded media playback state.
-	 */
-	public var state(get, null):String;
-	
-	/**
-	 * Currently loading a content?
-	 */
-	public var loading(get, null):Bool;
-	
-	/**
-	 * Smoothed display?
-	 */
-	public var smoothing(get, set):Bool;
-	
-	/**
-	 * Content original width.
-	 */
-	public var oWidth(get, null):Float;
-	
-	/**
-	 * Content original height.
-	 */
-	public var oHeight(get, null):Float;
+	#if !flash
+		private var _other(get, null):Int;			// media sprite not shown at the moment
+		
+		/**
+		 * Current media type on display.
+		 */
+		public var mediaType(get, never):String;
+		
+		/**
+		 * Start the media playback as soon as it is loaded?
+		 */
+		public var playOnLoad(get, set):Bool;
+		
+		/**
+		 * Text display mode.
+		 */
+		public var textDisplay(get, set):String;
+		
+		/**
+		 * Text content alignment.
+		 */
+		public var textAlign(get, set):String;
+		
+		/**
+		 * Text font name.
+		 */
+		public var fontName(get, set):String;
+		
+		/**
+		 * Text font size.
+		 */
+		public var fontSize(get, set):Int;
+		
+		/**
+		 * Text font color.
+		 */
+		public var fontColor(get, set):Int;
+		
+		/**
+		 * Is text bold?
+		 */
+		public var fontBold(get, set):Bool;
+		
+		/**
+		 * Is text italic?
+		 */
+		public var fontItalic(get, set):Bool;
+		
+		/**
+		 * Text leading.
+		 */
+		public var leading(get, set):Int;
+		
+		/**
+		 * Space between chars.
+		 */
+		public var letterSpacing(get, set):Float;
+		
+		/**
+		 * Maximum number of chars of plain text to display (<= 0 for no limit, does not affect HTML).
+		 */
+		public var maxChars(get, set):Int;
+		
+		/**
+		 * Currently loaded media total time.
+		 */
+		public var totalTime(get, never):Int;
+		
+		/**
+		 * Currently loaded media time.
+		 */
+		public var time(get, never):Int;
+		
+		/**
+		 * Currently loaded media url.
+		 */
+		public var url(get, never):String;
+		
+		/**
+		 * Currently loaded media playback state.
+		 */
+		public var state(get, never):String;
+		
+		/**
+		 * Currently loading a content?
+		 */
+		public var loading(get, never):Bool;
+		
+		/**
+		 * Smoothed display?
+		 */
+		public var smoothing(get, set):Bool;
+		
+		/**
+		 * Content original width.
+		 */
+		public var oWidth(get, never):Float;
+		
+		/**
+		 * Content original height.
+		 */
+		public var oHeight(get, never):Float;
+	#end
 
 	/**
 	 * PageSprite constructor.
@@ -226,6 +233,19 @@ class PageSprite extends Sprite
 		this._page1.addEventListener(SpriteEvent.CONTENT_LOOP, onContentLoop);
 		this._page1.addEventListener(SpriteEvent.CONTENT_END, onContentEnd);
 		
+		// place sprites
+		
+		this._sprholder.x = this._mask.x = -w / 2;
+		this._sprholder.y = this._mask.y = -h / 2;
+		#if html5
+			this._click.x = this._mask.x;
+			this._click.y = this._mask.y;
+		#end
+		
+		// transformations
+		
+		this._ctransform = new ColorTransform();
+		
 	}
 	
 	// GETTERS/SETTERS
@@ -233,6 +253,7 @@ class PageSprite extends Sprite
 	/**
 	 * The media sprite index not shown at the moment.
 	 */
+	@:getter(_other)
 	private function get__other():Int
 	{
 		if (this._current == 0) return (1);
@@ -242,6 +263,7 @@ class PageSprite extends Sprite
 	/**
 	 * Currenlty loaded file url.
 	 */
+	@:getter(url)
 	public function get_url():String
 	{
 		return (this._pages[this._current].url);
@@ -250,6 +272,7 @@ class PageSprite extends Sprite
 	/**
 	 * Current media type on display.
 	 */
+	@:getter(mediaType)
 	public function get_mediaType():String
 	{
 		return (this._pages[this._current].mediaType);
@@ -258,10 +281,12 @@ class PageSprite extends Sprite
 	/**
 	 * Start the media playback as soon as it is loaded?
 	 */
+	@:getter(playOnLoad)
 	public function get_playOnLoad():Bool
 	{
 		return (this._pages[this._current].playOnLoad);
 	}
+	@:setter(playOnLoad)
 	public function set_playOnLoad(value:Bool):Bool
 	{
 		this._page0.playOnLoad = value;
@@ -272,10 +297,12 @@ class PageSprite extends Sprite
 	/**
 	 * Text display mode.
 	 */
+	@:getter(textDisplay)
 	public function get_textDisplay():String
 	{
 		return (this._pages[this._current].textDisplay);
 	}
+	@:setter(textDisplay)
 	public function set_textDisplay(value:String):String
 	{
 		this._page0.textDisplay = value;
@@ -286,10 +313,12 @@ class PageSprite extends Sprite
 	/**
 	 * Text content alignment.
 	 */
+	@:getter(textAlign)
 	public function get_textAlign():String
 	{
 		return (this._pages[this._current].textAlign);
 	}
+	@:setter(textAlign)
 	public function set_textAlign(value:String):String
 	{
 		this._page0.textAlign = value;
@@ -300,10 +329,12 @@ class PageSprite extends Sprite
 	/**
 	 * Text font name.
 	 */
+	@:getter(fontName)
 	public function get_fontName():String
 	{
 		return (this._pages[this._current].fontName);
 	}
+	@:setter(fontName)
 	public function set_fontName(value:String):String
 	{
 		this._page0.fontName = value;
@@ -314,10 +345,12 @@ class PageSprite extends Sprite
 	/**
 	 * Text font size.
 	 */
+	@:getter(fontSize)
 	public function get_fontSize():Int
 	{
 		return (this._pages[this._current].fontSize);
 	}
+	@:setter(fontSize)
 	public function set_fontSize(value:Int):Int
 	{
 		this._page0.fontSize = value;
@@ -328,10 +361,12 @@ class PageSprite extends Sprite
 	/**
 	 * Text font color.
 	 */
+	@:getter(fontColor)
 	public function get_fontColor():Int
 	{
 		return (this._pages[this._current].fontColor);
 	}
+	@:setter(fontColor)
 	public function set_fontColor(value:Int):Int
 	{
 		this._page0.fontColor = value;
@@ -342,10 +377,12 @@ class PageSprite extends Sprite
 	/**
 	 * Is text bold?
 	 */
+	@:getter(fontBold)
 	public function get_fontBold():Bool
 	{
 		return (this._pages[this._current].fontBold);
 	}
+	@:setter(fontBold)
 	public function set_fontBold(value:Bool):Bool
 	{
 		this._page0.fontBold = value;
@@ -356,10 +393,12 @@ class PageSprite extends Sprite
 	/**
 	 * Is text italic?
 	 */
+	@:getter(fontItalic)
 	public function get_fontItalic():Bool
 	{
 		return (this._pages[this._current].fontItalic);
 	}
+	@:setter(fontItalic)
 	public function set_fontItalic(value:Bool):Bool
 	{
 		this._page0.fontItalic = value;
@@ -370,10 +409,12 @@ class PageSprite extends Sprite
 	/**
 	 * Text leading.
 	 */
+	@:getter(leading)
 	public function get_leading():Int
 	{
 		return (this._pages[this._current].leading);
 	}
+	@:setter(leading)
 	public function set_leading(value:Int):Int
 	{
 		this._page0.leading = value;
@@ -384,10 +425,12 @@ class PageSprite extends Sprite
 	/**
 	 * Space between chars.
 	 */
+	@:getter(letterSpacing)
 	public function get_letterSpacing():Float
 	{
 		return (this._pages[this._current].letterSpacing);
 	}
+	@:setter(letterSpacing)
 	public function set_letterSpacing(value:Float):Float
 	{
 		this._page0.letterSpacing = value;
@@ -398,10 +441,12 @@ class PageSprite extends Sprite
 	/**
 	 * Maximum number of chars of plain text to display (<= 0 for no limit, does not affect HTML).
 	 */
+	@:getter(maxChars)
 	public function get_maxChars():Int
 	{
 		return (this._pages[this._current].maxChars);
 	}
+	@:getter(maxChars)
 	public function set_maxChars(value:Int):Int
 	{
 		this._page0.maxChars = value;
@@ -412,6 +457,7 @@ class PageSprite extends Sprite
 	/**
 	 * Currently loaded media total time.
 	 */
+	@:getter(totalTime)
 	public function get_totalTime():Int
 	{
 		return (this._pages[this._current].totalTime);
@@ -420,6 +466,7 @@ class PageSprite extends Sprite
 	/**
 	 * Currently loaded media time.
 	 */
+	@:getter(time)
 	public function get_time():Int
 	{
 		return (this._pages[this._current].time);
@@ -428,6 +475,7 @@ class PageSprite extends Sprite
 	/**
 	 * Currently loaded media playback state.
 	 */
+	@:getter(state)
 	public function get_state():String
 	{
 		return (this._pages[this._current].state);
@@ -436,6 +484,7 @@ class PageSprite extends Sprite
 	/**
 	 * Currently loading a content?
 	 */
+	@:getter(loading)
 	public function get_loading():Bool
 	{
 		return (this._pages[this._other].loading);
@@ -444,10 +493,12 @@ class PageSprite extends Sprite
 	/**
 	 * Smoothed display?
 	 */
+	@:getter(smoothing)
 	public function get_smoothing():Bool
 	{
 		return (this._page0.smoothing);
 	}
+	@:setter(smoothing)
 	public function set_smoothing(value:Bool):Bool
 	{
 		this._page0.smoothing = value;
@@ -458,6 +509,7 @@ class PageSprite extends Sprite
 	/**
 	 * Content original width.
 	 */
+	@:getter(oWidth)
 	public function get_oWidth():Float
 	{
 		return (this._pages[this._current].oWidth);
@@ -466,6 +518,7 @@ class PageSprite extends Sprite
 	/**
 	 * Content original height.
 	 */
+	@:getter(oHeight)
 	public function get_oHeight():Float
 	{
 		return (this._pages[this._current].oHeight);
@@ -486,6 +539,7 @@ class PageSprite extends Sprite
 			this._mask.width = value;
 			this._page0.width = value;
 			this._page1.width = value;
+			this._sprholder.x = this._mask.x = -value / 2;
 		}
 	#else
 		override public function get_width():Float
@@ -497,8 +551,10 @@ class PageSprite extends Sprite
 			this._mask.width = value;
 			this._page0.width = value;
 			this._page1.width = value;
+			this._sprholder.x = this._mask.x = -value / 2;
 			#if html5
 				this._click.width = value;
+				this._click.x = this._mask.x;
 			#end
 			return (value);
 		}
@@ -519,6 +575,7 @@ class PageSprite extends Sprite
 			this._mask.height = value;
 			this._page0.height = value;
 			this._page1.height = value;
+			this._sprholder.y = this._mask.y = -value / 2;
 		}
 	#else
 		override public function get_height():Float
@@ -530,9 +587,67 @@ class PageSprite extends Sprite
 			this._mask.height = value;
 			this._page0.height = value;
 			this._page1.height = value;
+			this._sprholder.y = this._mask.y = -value / 2;
 			#if html5
 				this._click.height = value;
+				this._click.y = this._mask.y;
 			#end
+			return (value);
+		}
+	#end
+	
+	/**
+	 * Sprite X position.
+	 */
+	#if flash
+		@:getter(x)
+		public function get_x():Float
+		{
+			return (this._setX);
+		}
+		@:setter(x)
+		public function set_x(value:Float):Void
+		{
+			this._setX = value;
+			super.x = value + (this.width / 2);
+		}
+	#else
+		override function get_x():Float
+		{
+			return (this._setX);
+		}
+		override function set_x(value:Float):Float
+		{
+			this._setX = value;
+			super.x = value + (this.width / 2);
+			return (value);
+		}
+	#end
+	
+	/**
+	 * Sprite Y position.
+	 */
+	#if flash
+		@:getter(y)
+		public function get_y():Float
+		{
+			return (this._setY);
+		}
+		@:setter(y)
+		public function set_y(value:Float):Void
+		{
+			this._setY = value;
+			super.y = value + (this.height / 2);
+		}
+	#else
+		override function get_y():Float
+		{
+			return (this._setY);
+		}
+		override function set_y(value:Float):Float
+		{
+			this._setY = value;
+			super.y = value + (this.height / 2);
 			return (value);
 		}
 	#end
@@ -687,6 +802,57 @@ class PageSprite extends Sprite
 	}
 	
 	/**
+	 * Set the red color offset.
+	 * @param	to	the new color offset
+	 */
+	public function setRed(to:Float):Void
+	{
+		if ((to >= 0) && (to <= 255)) {
+			this._ctransform.redOffset = to;
+			#if flash
+				this.transform.colorTransform = this._ctransform;
+			#else
+				this._page0.setRed(to);
+				this._page1.setRed(to);
+			#end
+		}
+	}
+	
+	/**
+	 * Set the green color offset.
+	 * @param	to	the new color offset
+	 */
+	public function setGreen(to:Float):Void
+	{
+		if ((to >= 0) && (to <= 255)) {
+			this._ctransform.greenOffset = to;
+			#if flash
+				this.transform.colorTransform = this._ctransform;
+			#else
+				this._page0.setGreen(to);
+				this._page1.setGreen(to);
+			#end
+		}
+	}
+	
+	/**
+	 * Set the blue color offset.
+	 * @param	to	the new color offset
+	 */
+	public function setBlue(to:Float):Void
+	{
+		if ((to >= 0) && (to <= 255)) {
+			this._ctransform.blueOffset = to;
+			#if flash
+				this.transform.colorTransform = this._ctransform;
+			#else
+				this._page0.setBlue(to);
+				this._page1.setBlue(to);
+			#end
+		}
+	}
+	
+	/**
 	 * Release resources used by the object.
 	 */
 	public function dispose():Void
@@ -712,6 +878,7 @@ class PageSprite extends Sprite
 		this._page1 = null;
 		this._mask.graphics.clear();
 		this._mask = null;
+		this._ctransform = null;
 		#if html5
 			this._click.graphics.clear();
 			this._click = null;

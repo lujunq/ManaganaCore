@@ -61,3 +61,10 @@ openfl.media.SoundChannel
 	#end
 	
 /* MANAGANA FIX END */
+
+
+------------------------------
+
+export swc
+
+edit C:\HaxeToolkit\haxe\lib\openfl\3,5,3\templates\flash\hxml
